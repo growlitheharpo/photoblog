@@ -1,0 +1,88 @@
+@tailwind base;
+
+body, p, li {
+    @apply font-body text-base text-gray-700
+}
+h1 {
+    @apply font-head text-3xl text-orange-600
+}
+h2 {
+    @apply font-head text-2xl text-gray-700
+}
+h3 {
+    @apply font-head text-xl text-orange-600
+}
+h4 {
+    @apply font-head text-xl text-gray-700
+}
+h5 {
+    @apply font-head text-lg text-gray-700
+}
+h6 {
+    @apply font-headlite text-base text-gray-700
+}
+
+/* Add the blog-specific stuff */
+#blogpost a {
+    @apply text-orange-600
+}
+#blogpost a:hover {
+    @apply text-orange-500
+}
+#blogpost pre, #blogpost code {
+    @apply text-xs overflow-auto;
+}
+#blogpost ul {
+    @apply ml-6 list-disc;
+}
+#blogpost ol {
+    @apply ml-6 list-decimal;
+}
+#blogpost li {
+    @apply mb-4;
+}
+#blogpost .center-image {
+    @apply mx-auto block
+}
+#blogpost .half-image {
+    @apply mx-auto w-1/2 float-left px-1
+}
+#blogpost .half-image:after {
+    @apply clear-both
+}
+#blogpost h3, #blogpost h4, #blogpost h5, #blogpost h6, #blogpost p {
+    @apply mb-5
+}
+#blogpost table {
+    @apply font-headlite mx-auto border-collapse p-2 overflow-scroll mb-5;
+    background: #FCFCFC;
+}
+#blogpost th, #blogpost td {
+    @apply border p-2;
+    border-color: #f0f0f0;
+}
+#blogpost th {
+    background: #F8F8F8;
+}
+
+
+/* This magic class courtesy of: https://www.ostraining.com/blog/coding/responsive-videos/ */
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+@tailwind components;
+
+@tailwind utilities;
+

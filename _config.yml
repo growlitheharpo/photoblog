@@ -1,0 +1,3 @@
+highlighter: rouge
+excerpt_separator: <!--more-->
+exclude: [ 'tailwind', '*.bat',  '*.sh', '*.py' ]

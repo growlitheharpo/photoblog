@@ -1,0 +1,58 @@
+name: Generate css and blog tags
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Setup Python3
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "10"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Run build scripts
+        run: |
+          bash ./ci-setup.sh
+
+      - name: Enable development mode
+        run: |
+          bundle config unset deployment
+
+      - name: Build site
+        uses: limjh16/jekyll-action-ts@v2
+        with:
+          enable_cache: true
+          format_output: false
+          prettier_opts:
+          prettier_ignore: '*'
+
+      - name: Tidy css
+        run: |
+          bash ./ci-tidy.sh
+
+      - name: Print diff
+        run: |
+          git status
+
+      - name: Commit changes (if any)
+        uses: EndBug/add-and-commit@v5
+        with:
+          add: "tags/ assets/"
+          author_name: "Github Actions Bot"
+          author_email: "<>"
+          message: "Auto-update tags and CSS"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

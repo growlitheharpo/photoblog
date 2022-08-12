@@ -1,0 +1,13 @@
+<li class="mb-4">
+    <div id="blogpost">
+        {% include posthead.html post=include.post %}
+        <span>Tags: {% for tag in include.post.tags %}
+            {% if tag == page.tag %}<b>{% endif %}<a href="/tags/{{tag}}">{{tag}}</a>{% if tag == page.tag %}</b>{% endif %}{% if forloop.last %}{%else%},{%endif%} {% endfor %}</span>
+        <div class="ml-6">
+            <div class="blog-excerpt">
+                <p>{{ include.post.excerpt }}</p>
+            </div>
+            <a href="{{ include.post.url }}">Read more...</a>
+        </div>
+    </div>
+</li>

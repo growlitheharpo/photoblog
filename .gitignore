@@ -1,0 +1,8 @@
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+
+# Ignore our Tailwind stuff that shouldn't be checked in
+_tailwind/node_modules
+_tailwind/package-lock.json
