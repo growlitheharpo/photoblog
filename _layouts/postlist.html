@@ -2,7 +2,7 @@
 layout: primary
 ---
 <div id="blogpage clear-both">
-  <div class="w-full md:w-1/6 mb-4 md:mb-0 float-left" id="blogpost">
+  <!--div class="w-full md:w-1/6 mb-4 md:mb-0 float-left" id="blogpost">
     <h2>Tags</h2>
     <span>All tags:
       {% for tag in site.tags %}
@@ -10,17 +10,16 @@ layout: primary
           href="/tags/{{tag[0]}}">{{tag[0]}}</a>{% if tag[0] == page.tag %}</b>{% endif %}{% if forloop.last %}{%else%},{%endif%}
       {% endfor %}
     </span>
-  </div>
-  <div class="w-full md:w-5/6 float-right">
+  </div-->
+  <!--div class="w-full md:w-5/6 float-right"-->
+  <div>
+    {% if page.tag %}
     <h2>
-      {% if page.tag %}
       Posts tagged "{{page.tag}}":
-      {% else %}
-      All Posts
-      {% endif %}
     </h2>
     <hr>
-    <div class="ml-4 mt-4">
+    {% endif %}
+    <div class="mt-4">
       <ul>
         {% if page.tag %}
           {% for tag in site.tags %}

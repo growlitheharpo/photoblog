@@ -1,13 +1,21 @@
-<li class="mb-4">
+<li class="mt-4 mb-6">
     <div id="blogpost">
         {% include posthead.html post=include.post %}
+        <div class="mb-2">
+            <div class="blog-excerpt">
+                <div>
+                    <a href="{{include.post.fullsize}}">
+                        <img src="{{include.post.thumb}}"
+                            {% if include.post.heightcap %}
+                                style="height:{{include.post.heightcap}}"
+                            {% endif %}
+                            class="mx-auto">
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% include postfoot.html post=include.post %}
         <span>Tags: {% for tag in include.post.tags %}
             {% if tag == page.tag %}<b>{% endif %}<a href="/tags/{{tag}}">{{tag}}</a>{% if tag == page.tag %}</b>{% endif %}{% if forloop.last %}{%else%},{%endif%} {% endfor %}</span>
-        <div class="ml-6">
-            <div class="blog-excerpt">
-                <p>{{ include.post.excerpt }}</p>
-            </div>
-            <a href="{{ include.post.url }}">Read more...</a>
-        </div>
     </div>
 </li>

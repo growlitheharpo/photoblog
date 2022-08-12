@@ -5,8 +5,14 @@ layout: primary
     {% include posthead.html post=page %}
     <br>
     <div>
-        {{ content }}
+        <a href="{{page.fullsize}}">
+            <img src="{{page.thumb}}">
+        </a>
+        <br>
+        {{content}}
     </div>
+    {% include postfoot.html post=page %}
+    <br>
     <a href="javascript:history.back()">Back to blog</a>
 </div>
 <div class="clear-both"></div>

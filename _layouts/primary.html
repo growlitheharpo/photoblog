@@ -14,4 +14,18 @@
             </div>
         </div>
     </body>
+
+    <script>
+        var potentialQuotes = [
+            "Enough to bewilder a crew",
+            "Other maps are such shapes",
+            "Ink in unfailing supplies",
+            "Ages ahead of the fashion",
+            "Chanted in mimsiest tones"
+        ]
+        var quoteElem = document.getElementById("head-quote-span");
+        if (quoteElem) {
+            quoteElem.innerHTML = "<i>" + potentialQuotes[Math.floor(Math.random() * potentialQuotes.length)] + "</i>"
+        }
+    </script>
 </html>
