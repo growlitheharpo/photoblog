@@ -23,7 +23,7 @@ def getTags(rootDir):
             while True:
                 curLine = f.readline().rstrip("\n")
                 if (curLine.startswith(TagsMarker)):
-                    curTags = curLine.strip(TagsMarker).split(" ")
+                    curTags = curLine[len(TagsMarker):].strip().split(" ")
                     allTags = allTags.union(curTags)
                     break
                 elif (curLine == FrontMatterMarker):
