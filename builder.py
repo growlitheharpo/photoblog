@@ -13,7 +13,7 @@ def main():
     day = datetime.now().strftime('%d')
     count = 0
 
-    while true:
+    while True:
         count = count + 1
         print("Enter photo number or 'stop' to exit: ", end='')
         photo_num = str(input())
