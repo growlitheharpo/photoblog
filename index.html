@@ -1,4 +1,91 @@
 ---
 title: Perfect and Absolute Blank
-layout: postlist
 ---
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Roboto+Condensed:300,400|Roboto:400" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <meta prefix="og: http://ogp.me/ns#" property="og:title" content="{{ page.title }}" />
+    <meta prefix="og: http://ogp.me/ns#" property="og:type" content="website" />
+    {% if page.thumb %}
+    <meta prefix="og: http://ogp.me/ns#" property="og:image" content="{{ page.thumb }}" />
+    {% else %}
+    <meta prefix="og: http://ogp.me/ns#" property="og:image"
+        content="https://com-jameskeats-photo.s3.amazonaws.com/2022-08-xx/DSC_0069_thumb.jpg" />
+    {% endif %}
+    <meta prefix="og: http://ogp.me/ns#" property="og:url" content="{{ site.url }}{{page.url}}" />
+
+    <title>{{ page.title }}</title>
+    <script src="https://kit.fontawesome.com/2ffb0e9231.js" crossorigin="anonymous"></script>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+<body>
+    <div class="mx-auto">
+        <div class="flex flex-col sm:flex-row">
+            <div class="flex-grow">
+                <div id="backdrop" class="bg-cover w-full bg-center">
+                    <div class="backdrop-blur-md w-full">
+                        <a id="clickme">
+                            <img id="showcase" class="object-contain w-full h-96 sm:h-screen">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-128 md:w-64 sm:w-56">
+                <div class="flex flex-col h-64 sm:h-screen p-4">
+                    <div class="flex-none">
+                        <h1>
+                            <a href="/">{{page.title}}</a>
+                        </h1>
+                        <span id="head-quote-span" class="text-sm"><i>...</i></span>
+                        <hr>
+                    </div>
+                    <div class="flex-grow mt-0 sm:mt-4">
+                        <div class="flex justify-between">
+                            <button class="mx-8" id="leftbutton">
+                                <i class="fa fa-solid fa-chevron-left fa-2x"></i>
+                            </button>
+                            <button class="mx-8" id="rightbutton">
+                                <i class="fa fa-solid fa-chevron-right fa-2x"></i>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap justify-center" id="gallery">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                            <img class="rounded-lg object-cover w-56 h-32 m-2" src="https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0409_thumb.jpg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var potentialQuotes = [
+            "Enough to bewilder a crew",
+            "Other maps are such shapes",
+            "Ink in unfailing supplies",
+            "Ages ahead of the fashion",
+            "Chanted in mimsiest tones"
+        ]
+        var quoteElem = document.getElementById("head-quote-span");
+        if (quoteElem) {
+            quoteElem.innerHTML = "<i>" + potentialQuotes[Math.floor(Math.random() * potentialQuotes.length)] + "</i>"
+        }
+    </script>
+</html>

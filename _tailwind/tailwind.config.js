@@ -1,13 +1,20 @@
 module.exports = {
   prefix: '',
+  content: [
+    "../assets/**/*.{html,js}",
+    "../_layouts/**/*.{html,js}",
+    "../_includes/**/*.{html,js}",
+    "../_posts/**/*.{html,js}",
+    "../index.html",
+  ],
   important: false,
   separator: ':',
   theme: {
     screens: {
-      sm: '550px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      sm: '720px',
+      md: '1180px',
+      lg: '1380px',
+      xl: '1520px',
       print: {'raw':'print'},
     },
     extend: {
@@ -29,6 +36,9 @@ module.exports = {
       },
       fontSize: {
         prlg: '1.4rem'
+      },
+      width: {
+        '128': '32rem'
       },
     },
     fontFamily: {

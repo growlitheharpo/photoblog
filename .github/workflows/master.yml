@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2-beta
         with:
-          node-version: "10"
+          node-version: "18"
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -38,10 +38,6 @@ jobs:
           format_output: false
           prettier_opts:
           prettier_ignore: '*'
-
-      - name: Tidy css
-        run: |
-          bash ./ci-tidy.sh
 
       - name: Print diff
         run: |
