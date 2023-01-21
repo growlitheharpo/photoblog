@@ -55,9 +55,7 @@ var main = (function($) { var _ = {
     },
 
     handleResize: function() {
-        const oldValue = _.$toTakeCount;
-        _.validateTakeCount();
-        if (_.$toTakeCount !== oldValue)
+        if (_.validateTakeCount())
         {
             _.setupGallery();
         }
@@ -70,19 +68,22 @@ var main = (function($) { var _ = {
         const xl = "(min-width: 1520px)";
 
         const oldValue = _.$toTakeCount;
+        const gallery = $("#gallery");
+        const galleryHeight = gallery.height();
+        const itemHeight = 128; // todo: don't hardcode this??
+        const maxVertical = Math.floor(galleryHeight / (itemHeight * 1.1));
+
         if (window.matchMedia(xl).matches || window.matchMedia(lg).matches)
         {
-            console.log("we think we're big")
-            _.$toTakeCount = 10;
+            // For the large layout, we have 2 columns
+            _.$toTakeCount = maxVertical * 2;
         }
         else if (window.matchMedia(md).matches || window.matchMedia(sm).matches)
         {
-            console.log("we think we're md")
-            _.$toTakeCount = 4;
+            _.$toTakeCount = maxVertical;
         }
         else
         {
-            console.log("we think we're sm")
             _.$toTakeCount = 6;
         }
 
@@ -119,7 +120,7 @@ var main = (function($) { var _ = {
         for (let i = start; i < end; ++i) {
             const thisEntry = _.$postList[i];
             gallery.append(
-                `<button id="gallery-${i}"><img class="rounded-lg object-cover w-56 h-32 m-2" src="${thisEntry.thumb}"></img></button>`
+                `<button id="gallery-${i}"><img class="rounded-lg object-cover w-56 h-32" src="${thisEntry.thumb}"></img></button>`
             )
 
             $(`#gallery-${i}`).click(function() {
