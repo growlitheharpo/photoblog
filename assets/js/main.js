@@ -9,6 +9,10 @@ var main = (function($) { var _ = {
 
     $toTakeCount: 10,
 
+    $selectedItem: null,
+
+    $selectedClasses: "border-solid border-orange-400 border-4",
+
     startup: function() {
         _.$window = $(window);
 
@@ -46,10 +50,10 @@ var main = (function($) { var _ = {
             _.pageRight();
         })
 
-        let chosenEntry = _.$postList[Math.floor(Math.random() * _.$postList.length)];
-        _.setFocus(chosenEntry.thumb, chosenEntry.fullsize);
+        const chosenEntry = _.$postList[Math.floor(Math.random() * _.$postList.length)];
         _.validateTakeCount();
         _.setupGallery();
+        _.setFocus(chosenEntry);
 
         $(window).resize(function () { _.handleResize(); });
     },
@@ -71,7 +75,7 @@ var main = (function($) { var _ = {
         const gallery = $("#gallery");
         const galleryHeight = gallery.height();
         const itemHeight = 128; // todo: don't hardcode this??
-        const maxVertical = Math.floor(galleryHeight / (itemHeight * 1.1));
+        const maxVertical = Math.floor(galleryHeight / (itemHeight * 1.08));
 
         if (window.matchMedia(xl).matches || window.matchMedia(lg).matches)
         {
@@ -90,20 +94,40 @@ var main = (function($) { var _ = {
         return _.$toTakeCount !== oldValue;
     },
 
-    setFocus: function(thumbUrl, bigUrl) {
-        //$("#bg").attr("src", thumbUrl);
-        $("#backdrop").css("background-image", "url(\"" + thumbUrl + "\")");
-        $("#showcase").attr("src", thumbUrl);
-        $("#clickme").attr("href", bigUrl);
+    setFocus: function(newTarget) {
+        const previousTargetIndex = _.$postList.indexOf(_.$selectedItem);
+        const previousTargetElement = $(`#gallery-${previousTargetIndex}-image`);
+        if (previousTargetElement) {
+            previousTargetElement.removeClass(_.$selectedClasses);
+        }
+
+        _.$selectedItem = newTarget;
+        $("#backdrop").css("background-image", "url(\"" + newTarget.thumb + "\")");
+        $("#showcase").attr("src", newTarget.thumb);
+        $("#clickme").attr("href", newTarget.fullsize);
+
+        const targetIndex = _.$postList.indexOf(newTarget);
+        const targetElement = $(`#gallery-${targetIndex}-image`);
+        if (targetElement) {
+            targetElement.addClass(_.$selectedClasses);
+        }
+    },
+
+    determinePageCount: function() {
+        return Math.ceil(_.$postList.length / _.$toTakeCount);
+    },
+
+    determineCurrentPage: function() {
+        return Math.floor(_.$currentIndex / _.$toTakeCount) + 1;
     },
 
     pageLeft: function() {
-        _.$currentIndex -= _.$toTakeCount
+        _.$currentIndex -= _.$toTakeCount;
         _.setupGallery();
     },
 
     pageRight: function() {
-        _.$currentIndex += _.$toTakeCount
+        _.$currentIndex += _.$toTakeCount;
         _.setupGallery();
     },
 
@@ -112,21 +136,34 @@ var main = (function($) { var _ = {
         gallery.empty();
 
         const toTake = _.$toTakeCount;
-        _.$currentIndex = Math.min(_.$postList.length - toTake, _.$currentIndex);
-        _.$currentIndex = Math.max(_.$currentIndex, 0);
+        const pageCount = _.determinePageCount();
+
+        const minValue = 0;
+        const maxValue = (pageCount - 1) * toTake;
+        _.$currentIndex = Math.max(Math.min(_.$currentIndex, maxValue), minValue);
+        const currPage = _.determineCurrentPage();
 
         const start = _.$currentIndex;
         const end = Math.min(start + toTake, _.$postList.length);
         for (let i = start; i < end; ++i) {
             const thisEntry = _.$postList[i];
             gallery.append(
-                `<button id="gallery-${i}"><img class="rounded-lg object-cover w-56 h-32" src="${thisEntry.thumb}"></img></button>`
+                `<button id="gallery-${i}">
+                    <img class="rounded-lg object-cover w-56 h-32" src="${thisEntry.thumb}" id="gallery-${i}-image"></img>
+                </button>`
             )
 
-            $(`#gallery-${i}`).click(function() {
-                _.setFocus(thisEntry.thumb, thisEntry.fullsize);
+            const button = $(`#gallery-${i}`);
+            button.click(function() {
+                _.setFocus(thisEntry);
             })
+
+            if (thisEntry === _.$selectedItem) {
+                $(`gallery-${i}-image`).addClass(_.$selectedClasses);
+            }
         }
+
+        $("#pagecount").text(`${currPage} / ${pageCount}`);
     }
 
 }; return _; })(jQuery); main.startup();
