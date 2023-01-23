@@ -47,11 +47,11 @@ var main = (function ($) {
             _.$showcaseInfoDisableButton = $("#showcase-infobox-off");
             _.$showcaseInfobox = $("#showcase-infobox");
 
-            _.$showcaseInfoEnableButton.click(function() {
+            _.$showcaseInfoEnableButton.click(function () {
                 _.enableShowcaseInfo();
             });
 
-            _.$showcaseInfoDisableButton.click(function() {
+            _.$showcaseInfoDisableButton.click(function () {
                 _.disableShowcaseInfo();
             });
 
@@ -63,15 +63,15 @@ var main = (function ($) {
                 _.showcaseRight();
             });
 
-            $("#leftbutton").click(function () {
+            $("#gallery-left-button").click(function () {
                 _.pageLeft();
             });
 
-            $("#rightbutton").click(function () {
+            $("#gallery-right-button").click(function () {
                 _.pageRight();
             });
 
-            $(document).keydown(function(e) {
+            $(document).keydown(function (e) {
                 if (e.which === 37) {
                     _.showcaseLeft();
                 }
@@ -158,6 +158,8 @@ var main = (function ($) {
             if (!scrolled) {
                 _.handleSelectionHighlight();
             }
+
+            _.handleShowcaseButtonVisibility();
         },
 
         determinePageCount: function () {
@@ -168,7 +170,7 @@ var main = (function ($) {
             return Math.floor(_.$currentIndex / _.$toTakeCount) + 1;
         },
 
-        getPageForEntry: function(entry) {
+        getPageForEntry: function (entry) {
             const entryIndex = _.$postList.indexOf(entry);
             return Math.floor(entryIndex / _.$toTakeCount) + 1;
         },
@@ -183,7 +185,7 @@ var main = (function ($) {
             _.setupGallery();
         },
 
-        scrollToPage: function(targetPage) {
+        scrollToPage: function (targetPage) {
             const newIndex = (targetPage - 1) * _.$toTakeCount;
             if (_.$currentIndex !== newIndex) {
                 _.$currentIndex = newIndex;
@@ -223,11 +225,12 @@ var main = (function ($) {
             }
 
             _.handleSelectionHighlight();
+            _.handleGalleryButtonVisibility();
 
-            $("#pagecount").text(`${currPage} / ${pageCount}`);
+            $("#page-count").text(`${currPage} / ${pageCount}`);
         },
 
-        handleSelectionHighlight: function() {
+        handleSelectionHighlight: function () {
             const children = $("#gallery>button>img");
             children.removeClass("border-orange-400");
             children.removeClass("border-transparent");
@@ -241,12 +244,49 @@ var main = (function ($) {
             }
         },
 
-        enableShowcaseInfo: function() {
+        handleShowcaseButtonVisibility: function () {
+            const leftIcon = $("#showcase-left-icon");
+            const rightIcon = $("#showcase-right-icon");
+            leftIcon.removeClass("text-transparent").removeClass("text-white");
+            rightIcon.removeClass("text-transparent").removeClass("text-white");
+
+            const newIndex = _.$postList.indexOf(_.$selectedItem);
+            if (newIndex <= 0) {
+                leftIcon.addClass("text-transparent");
+            } else {
+                leftIcon.addClass("text-white");
+            }
+
+            if (newIndex >= _.$postList.length - 1) {
+                rightIcon.addClass("text-transparent");
+            } else {
+                rightIcon.addClass("text-white");
+            }
+        },
+
+        handleGalleryButtonVisibility: function () {
+            const leftIcon = $("#gallery-left-button-icon");
+            const rightIcon = $("#gallery-right-button-icon");
+            leftIcon.removeClass("text-gray-300");
+            rightIcon.removeClass("text-gray-300");
+
+            const page = _.determineCurrentPage();
+            const pageCount = _.determinePageCount();
+            if (page === 1) {
+                leftIcon.addClass("text-gray-300");
+            }
+
+            if (page === pageCount) {
+                rightIcon.addClass("text-gray-300");
+            }
+        },
+
+        enableShowcaseInfo: function () {
             _.$showcaseInfobox.removeClass("hidden");
             _.$showcaseInfoEnableButton.addClass("hidden");
         },
 
-        disableShowcaseInfo: function() {
+        disableShowcaseInfo: function () {
             _.$showcaseInfoEnableButton.removeClass("hidden");
             _.$showcaseInfobox.addClass("hidden");
         },
