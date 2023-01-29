@@ -29,7 +29,7 @@ var main = (function ($) {
             fetch("/assets/js/scraped.json")
                 .then((response) => response.json())
                 .then((json) => {
-                    _.$postList = json.entries.reverse();
+                    _.$postList = json.entries.reverse().filter(item => !(item.disabled));
                     if (--_.$waitingCount === 0) {
                         _.initialize();
                     }

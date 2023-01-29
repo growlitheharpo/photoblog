@@ -59,6 +59,7 @@
     },
     {
       "title": "walk",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-08-17 12:00:02",
       "tags": "urban montreal",
@@ -77,6 +78,7 @@
     },
     {
       "title": "edge",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-08-17 12:00:04",
       "tags": "urban montreal architecture",
@@ -140,7 +142,8 @@
       "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0349.jpg"
     },
     {
-      "title": 55,
+      "title": "55",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-09-10 12:00:02",
       "tags": "montreal transit night bus urban",
@@ -189,6 +192,7 @@
     },
     {
       "title": "Atwater",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-09-25 12:00:04",
       "tags": "montreal atwater-market flowers",
@@ -197,6 +201,7 @@
     },
     {
       "title": "shadows",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-09-27 12:00:01",
       "tags": "montreal urban architecture",
@@ -293,6 +298,7 @@
     },
     {
       "title": "approach",
+      "disabled": true,
       "layout": "blogpost",
       "date": "2022-10-15 12:00:07",
       "tags": "montreal autumn street",
@@ -421,6 +427,7 @@
     },
     {
       "title": "glow",
+      "disabled": true,
       "date": "2023-01-28 12:00:01",
       "tags": "montreal night urban snow winter",
       "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0641_thumb.jpg",
