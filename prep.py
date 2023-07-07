@@ -17,33 +17,20 @@ S3_BUCKET = "com-jameskeats-photo"
 ArgParser = argparse.ArgumentParser()
 ArgParser.add_argument("--any-missing-json", action='store_true', default=False)
 
+def json_entry_exists(entryList, photoId):
+    return len([entry for entry in entryList if entry["id"] == photoId]) > 0
+
 def get_exif_tag(exifObject, tagName):
   for (k, v) in exifObject.items():
      if TAGS.get(k) == tagName:
         return v
 
-def replace_first_in_string(haystack, needle, replacement):
-    index = haystack.find(needle)
-    return haystack[:index] + replacement + haystack[index + 1:]
-
-def get_id_for_file(entry):
-    extensionIndex = entry.name.find('.')
-    photoId = entry.name[:extensionIndex]
-    thumbName = photoId + "_thumb" + entry.name[extensionIndex:]
-    return (photoId, thumbName)
-
-def thumbnail_exists(folder, thumbName):
-    return folder.joinpath(thumbName).exists()
-
-def json_entry_exists(jsonData, photoId):
-    return len([entry for entry in jsonData["entries"] if entry["id"] == photoId]) > 0
-
-def get_date_taken(folder, entry, jsonData):
-    sourceImage = Image.open(folder.joinpath(entry.name))
+def get_date_taken(fullImageFile, entryList):
+    sourceImage = Image.open(str(fullImageFile))
     dateTakenStr = get_exif_tag(sourceImage.getexif(), "DateTimeOriginal")
 
     if dateTakenStr is None:
-        fallbackIndex = len(jsonData["entries"]) % 60
+        fallbackIndex = len(entryList) % 60
         dateTaken = datetime(datetime.now().year, datetime.now().month, datetime.now().day, 12, 0, fallbackIndex)
     else:
         dateTaken = datetime.strptime(dateTakenStr, "%Y:%m:%d %H:%M:%S")
@@ -89,15 +76,16 @@ def get_title_tags(photoId):
 
     return (skip, stop, title, tags)
 
-def create_thumbnail(folder, entry, thumbName):
-    print(f"Creating {thumbName}")
-    cvimage = cv2.resize(cv2.imread(str(entry)), None, fx = 0.3, fy = 0.3)
-    thumbnailPath = str(folder.joinpath(thumbName))
-    cv2.imwrite(thumbnailPath, cvimage, [cv2.IMWRITE_JPEG_QUALITY, 92])
-    return thumbnailPath
+def create_thumbnail(fullImageFile, thumbnailFile):
+    print(f"Creating {thumbnailFile.name}")
+
+    srcImage = cv2.imread(str(fullImageFile))
+    resizedImage = cv2.resize(srcImage, None, fx = 0.3, fy = 0.3)
+    cv2.imwrite(str(thumbnailFile), resizedImage, [cv2.IMWRITE_JPEG_QUALITY, 92])
 
 def upload_file(s3, localFile, s3Path):
     if s3 is not None:
+        print(f"Uploading {localFile} to {s3Path}")
         s3.upload_file(localFile, S3_BUCKET, s3Path)
 
 def main():
@@ -113,28 +101,32 @@ def main():
     with open(str(jsPath), 'r') as f:
         existingEntries = json.load(f)
 
+    entryList = existingEntries["entries"]
+
     imgFolderPath = Path(EXPORTED_IMAGE_FOLDER)
-    for entry in imgFolderPath.iterdir():
-        if not entry.is_file():
+    for fullImageFile in imgFolderPath.iterdir():
+        if not fullImageFile.is_file():
             continue
 
-        if entry.name.endswith("_thumb.jpg") or not entry.name.endswith(".jpg"):
+        if fullImageFile.name.endswith("_thumb.jpg") or not fullImageFile.name.endswith(".jpg"):
             continue
 
-        photoId, thumbName = get_id_for_file(entry)
+        photoId = fullImageFile.stem
+        thumbnailFile = fullImageFile.with_name(f"{fullImageFile.stem}_thumb{fullImageFile.suffix}")
+        thumbnailName = thumbnailFile.stem
 
         # photo already exists
-        if json_entry_exists(existingEntries, photoId):
+        if json_entry_exists(entryList, photoId):
             continue
 
         # it is missing from the json:
         # if it has a thumbnail and we didn't pass the flag, skip it
-        if thumbnail_exists(imgFolderPath, thumbName) and not args.any_missing_json:
+        if thumbnailFile.exists() and not args.any_missing_json:
             print(f"Skipping missing image {photoId} because it already has a thumbnail")
             continue
 
         # it's a new file!
-        dateTaken = get_date_taken(imgFolderPath, entry, existingEntries)
+        dateTaken = get_date_taken(fullImageFile, entryList)
         shouldSkip, shouldStop, title, tags = get_title_tags(photoId)
 
         if shouldSkip:
@@ -143,27 +135,30 @@ def main():
         if shouldStop:
             break
 
-        if not thumbnail_exists(imgFolderPath, thumbName):
-            thumbnailFile = create_thumbnail(imgFolderPath, entry, thumbName)
-        else:
-            thumbnailFile = str(imgFolderPath.joinpath(thumbName))
+        if not thumbnailFile.exists():
+            create_thumbnail(fullImageFile, thumbnailFile)
 
         awsFolder = f"{dateTaken.year}-{dateTaken.strftime('%m')}-xx"
+        fullFileAwsKey = f"{awsFolder}/{fullImageFile.name}"
+        thumbnailFileAwsKey = f"{awsFolder}/{thumbnailFile.name}"
 
-        upload_file(s3, str(entry), f"{awsFolder}/{photoId}.jpg")
-        upload_file(s3, str(thumbnailFile), f"{awsFolder}/{photoId}_thumb.jpg")
+        upload_file(s3, str(fullImageFile), fullFileAwsKey)
+        upload_file(s3, str(thumbnailFile), thumbnailFileAwsKey)
 
-        newEntry = {
+        newJsonEntry = {
             "id": photoId,
             "title": title,
             "date": dateTaken.strftime("%Y-%m-%d %H:%M:%S"),
             "tags": tags,
-            "thumb": f"https://com-jameskeats-photo.s3.amazonaws.com/{awsFolder}/{photoId}_thumb.jpg",
-            "fullsize": f"https://com-jameskeats-photo.s3.amazonaws.com/{awsFolder}/{photoId}.jpg",
+            "fullsize": f"https://com-jameskeats-photo.s3.amazonaws.com/{fullFileAwsKey}",
+            "thumb": f"https://com-jameskeats-photo.s3.amazonaws.com/{thumbnailFileAwsKey}",
         }
 
         createdList.append(f"{photoId} in {awsFolder}")
-        existingEntries["entries"].append(newEntry)
+        entryList.append(newJsonEntry)
+
+    entryList.sort(key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d %H:%M:%S"))
+    existingEntries["entries"] = entryList
 
     with open(str(jsPath), 'w') as output:
         json.dump(existingEntries, output, indent=2, default=str)
