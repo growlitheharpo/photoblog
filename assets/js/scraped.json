@@ -114,6 +114,15 @@
       "id": "DSC_0191"
     },
     {
+      "id": "DSC_0194",
+      "disabled": true,
+      "title": "lounge",
+      "date": "2022-08-22 14:42:15",
+      "tags": "animal cat montreal",
+      "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2022-08-xx/DSC_0194.jpg",
+      "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2022-08-xx/DSC_0194_thumb.jpg"
+    },
+    {
       "title": "inside-out",
       "layout": "blogpost",
       "date": "2022-09-07 12:00:01",
@@ -148,6 +157,14 @@
       "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0247_thumb.jpg",
       "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2022-09-XX/DSC_0247.jpg",
       "id": "DSC_0247"
+    },
+    {
+      "id": "DSC_0280",
+      "title": "one way home",
+      "date": "2022-09-07 20:16:58",
+      "tags": "montreal urban architecture traffic",
+      "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2022-09-xx/DSC_0280.jpg",
+      "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2022-09-xx/DSC_0280_thumb.jpg"
     },
     {
       "title": "lurk",
@@ -397,15 +414,6 @@
       "id": "DSC_0596"
     },
     {
-      "title": "zigzag",
-      "layout": "blogpost",
-      "date": "2023-01-14 12:00:10",
-      "tags": "montreal urban",
-      "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0622_thumb.jpg",
-      "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0622.jpg",
-      "id": "DSC_0622"
-    },
-    {
       "title": "crossings",
       "layout": "blogpost",
       "date": "2023-01-14 12:00:02",
@@ -476,6 +484,15 @@
       "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0621_thumb.jpg",
       "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0621.jpg",
       "id": "DSC_0621"
+    },
+    {
+      "title": "zigzag",
+      "layout": "blogpost",
+      "date": "2023-01-14 12:00:10",
+      "tags": "montreal urban",
+      "thumb": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0622_thumb.jpg",
+      "fullsize": "https://com-jameskeats-photo.s3.amazonaws.com/2023-01-xx/DSC_0622.jpg",
+      "id": "DSC_0622"
     },
     {
       "title": "glow",
