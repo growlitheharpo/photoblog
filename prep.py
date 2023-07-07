@@ -16,6 +16,8 @@ S3_BUCKET = "com-jameskeats-photo"
 
 ArgParser = argparse.ArgumentParser()
 ArgParser.add_argument("--any-missing-json", action='store_true', default=False)
+ArgParser.add_argument("-patch-times", action='store_true', default=False)
+args = ArgParser.parse_args()
 
 def json_entry_exists(entryList, photoId):
     return len([entry for entry in entryList if entry["id"] == photoId]) > 0
@@ -88,19 +90,45 @@ def upload_file(s3, localFile, s3Path):
         print(f"Uploading {localFile} to {s3Path}")
         s3.upload_file(localFile, S3_BUCKET, s3Path)
 
-def main():
+def load_json():
+    cwd = os.getcwd()
+    jsPath = Path(cwd).joinpath("assets/js/scraped.json")
+    with open(str(jsPath), 'r') as f:
+        existingEntries = json.load(f)
+
+    return existingEntries
+
+def save_json(jsonData):
+    cwd = os.getcwd()
+    jsPath = Path(cwd).joinpath("assets/js/scraped.json")
+    jsonData["entries"].sort(key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d %H:%M:%S"))
+    with open(str(jsPath), 'w') as output:
+        json.dump(jsonData, output, indent=2, default=str)
+
+def patch_times():
+    existingEntries = load_json()
+    entryList = existingEntries["entries"]
+
+    for jsonEntry in entryList:
+        id = jsonEntry["id"]
+        imagePath = Path(f"{EXPORTED_IMAGE_FOLDER}\{id}.jpg")
+        if not imagePath.exists():
+            print(f"Could not find {imagePath}")
+            continue
+
+        dateTaken = get_date_taken(imagePath, entryList)
+        jsonEntry["date"] = dateTaken.strftime("%Y-%m-%d %H:%M:%S")
+
+    save_json(existingEntries)
+
+def add_missing_entries():
     createdList = []
 
     # assume the user has installed the AWS CLI and set up an IAM user - we're not going to
     # even attempt any sort of authentication here
     s3 = boto3.client("s3")
 
-    args = ArgParser.parse_args()
-    cwd = os.getcwd()
-    jsPath = Path(cwd).joinpath("assets/js/scraped.json")
-    with open(str(jsPath), 'r') as f:
-        existingEntries = json.load(f)
-
+    existingEntries = load_json()
     entryList = existingEntries["entries"]
 
     imgFolderPath = Path(EXPORTED_IMAGE_FOLDER)
@@ -157,15 +185,14 @@ def main():
         createdList.append(f"{photoId} in {awsFolder}")
         entryList.append(newJsonEntry)
 
-    entryList.sort(key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d %H:%M:%S"))
-    existingEntries["entries"] = entryList
-
-    with open(str(jsPath), 'w') as output:
-        json.dump(existingEntries, output, indent=2, default=str)
+    save_json(existingEntries)
 
     print("Newly created items:")
     for item in createdList:
         print(f"\t{item}")
 
 if __name__ == "__main__":
-    main()
+    if (args.patch_times):
+        patch_times()
+    else:
+        add_missing_entries()
