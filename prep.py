@@ -9,8 +9,10 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from pathlib import Path
 import cv2
+import boto3
 
 EXPORTED_IMAGE_FOLDER = "M:\FOTO-AFTER"
+S3_BUCKET = "com-jameskeats-photo"
 
 ArgParser = argparse.ArgumentParser()
 ArgParser.add_argument("--any-missing-json", action='store_true', default=False)
@@ -90,10 +92,20 @@ def get_title_tags(photoId):
 def create_thumbnail(folder, entry, thumbName):
     print(f"Creating {thumbName}")
     cvimage = cv2.resize(cv2.imread(str(entry)), None, fx = 0.3, fy = 0.3)
-    cv2.imwrite(str(folder.joinpath(thumbName)), cvimage, [cv2.IMWRITE_JPEG_QUALITY, 92])
+    thumbnailPath = str(folder.joinpath(thumbName))
+    cv2.imwrite(thumbnailPath, cvimage, [cv2.IMWRITE_JPEG_QUALITY, 92])
+    return thumbnailPath
+
+def upload_file(s3, localFile, s3Path):
+    if s3 is not None:
+        s3.upload_file(localFile, S3_BUCKET, s3Path)
 
 def main():
     createdList = []
+
+    # assume the user has installed the AWS CLI and set up an IAM user - we're not going to
+    # even attempt any sort of authentication here
+    s3 = boto3.client("s3")
 
     args = ArgParser.parse_args()
     cwd = os.getcwd()
@@ -131,10 +143,15 @@ def main():
         if shouldStop:
             break
 
-        create_thumbnail(imgFolderPath, entry, thumbName)
+        if not thumbnail_exists(imgFolderPath, thumbName):
+            thumbnailFile = create_thumbnail(imgFolderPath, entry, thumbName)
+        else:
+            thumbnailFile = str(imgFolderPath.joinpath(thumbName))
 
-        # TODO: AWS bindings, upload to S3?
         awsFolder = f"{dateTaken.year}-{dateTaken.strftime('%m')}-xx"
+
+        upload_file(s3, str(entry), f"{awsFolder}/{photoId}.jpg")
+        upload_file(s3, str(thumbnailFile), f"{awsFolder}/{photoId}_thumb.jpg")
 
         newEntry = {
             "id": photoId,
