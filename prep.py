@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 import argparse
-import os
+import boto3
+import cv2
 import json
+import os
+
 from datetime import datetime
 from pathlib import Path
 from PIL import Image
 from PIL.ExifTags import TAGS
-from pathlib import Path
-import cv2
-import boto3
 
 EXPORTED_IMAGE_FOLDER = "M:\FOTO-AFTER"
 S3_BUCKET = "com-jameskeats-photo"
