@@ -149,7 +149,7 @@ var main = (function ($) {
             $("#backdrop").css("background-image", "url(\"" + newTarget.thumb + "\")");
             $("#showcase").attr("src", newTarget.thumb);
             $("#clickme").attr("href", newTarget.fullsize);
-            $("#showcase-title").text(newTarget.title);
+            //$("#showcase-title").text(newTarget.title);
             $("#showcase-date").text((new Date(newTarget.date)).toDateString());
 
             const newPage = _.getPageForEntry(newTarget);
